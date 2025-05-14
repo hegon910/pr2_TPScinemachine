@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField][Range(0, 90)] private float _maxPitch;
     [SerializeField][Range(0, 5)] private float _mouseSensitivity = 1;
 
+    private Vector2 _currentRotation;
     private void Awake() => Init();
     private void Init()
     {
@@ -39,28 +40,28 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 mouseDir = GetMouseDirection();
 
-        Vector2 currentRotation = new()
-        {
-            x = transform.rotation.eulerAngles.x,
-            y = transform.rotation.eulerAngles.y
-        };
+        //Vector2 currentRotation = new()
+        //{
+        //    x = transform.rotation.eulerAngles.x,
+        //    y = transform.rotation.eulerAngles.y
+        //};
 
         // x축의 경우라면 제한을 걸 필요 없음
-        currentRotation.x += mouseDir.x;
+        _currentRotation.x += mouseDir.x;
 
         // y축의 경우에는 각도 제한을 걸어야 함.
-        currentRotation.y = Mathf.Clamp(
-            currentRotation.y + mouseDir.y,
+        _currentRotation.y = Mathf.Clamp(
+            _currentRotation.y + mouseDir.y,
             _minPitch,
             _maxPitch
             );
 
         // 캐릭터 오브젝틔 경우 Y축 회전만 반영
-        transform.rotation = Quaternion.Euler(0, currentRotation.x, 0);
+        transform.rotation = Quaternion.Euler(0, _currentRotation.x, 0);
 
         //에임의 경우 상하 회전 반영
         Vector3 currentEuler = _aim.localEulerAngles;
-        _aim.localEulerAngles = new Vector3(currentRotation.x, currentEuler.y, currentEuler.z);
+        _aim.localEulerAngles = new Vector3(_currentRotation.y, currentEuler.y, currentEuler.z);
 
 
         //회전 벡터 반환
@@ -70,8 +71,15 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    public void SetBodyRotation()
+    public void SetAvatarRotation(Vector3 direction)
     {
+        if (direction == Vector3.zero) return;
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        _avatar.rotation = Quaternion.Lerp(
+            _avatar.rotation,
+            targetRotation,
+            _playerStatus.RotateSpeed * Time.deltaTime);
     }
 
     private Vector2 GetMouseDirection()
