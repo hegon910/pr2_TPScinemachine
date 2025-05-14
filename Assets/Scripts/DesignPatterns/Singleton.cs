@@ -1,6 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace PHG_Origin
+namespace DesignPattern
 {
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
@@ -9,7 +11,7 @@ namespace PHG_Origin
         {
             get
             {
-                if (_instance == null)
+                if(_instance == null)
                 {
                     _instance = FindObjectOfType<T>();
                     DontDestroyOnLoad(_instance);
@@ -20,9 +22,9 @@ namespace PHG_Origin
 
         protected void SingletonInit()
         {
-            if (_instance != null && _instance != this)
+            if(_instance != null && _instance != this)
             {
-                Destroy(gameObject);
+                Destroy(gameObject);            
             }
             else
             {
@@ -30,6 +32,5 @@ namespace PHG_Origin
                 DontDestroyOnLoad(_instance);
             }
         }
-
     }
 }

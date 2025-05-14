@@ -1,14 +1,11 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace PHG_Origin
-
+namespace DesignPattern
 {
     public class ObservableProperty<T>
     {
-
         [SerializeField] private T _value;
-
         public T Value
         {
             get => _value;
@@ -25,6 +22,7 @@ namespace PHG_Origin
         {
             _value = value;
         }
+
         public void Subscribe(UnityAction<T> action)
         {
             _onValueChanged.AddListener(action);
@@ -35,7 +33,7 @@ namespace PHG_Origin
             _onValueChanged.RemoveListener(action);
         }
 
-        public void UnsubscribeAll()
+        public void UnsbscribeAll()
         {
             _onValueChanged.RemoveAllListeners();
         }
@@ -44,6 +42,5 @@ namespace PHG_Origin
         {
             _onValueChanged?.Invoke(Value);
         }
-
     }
 }
